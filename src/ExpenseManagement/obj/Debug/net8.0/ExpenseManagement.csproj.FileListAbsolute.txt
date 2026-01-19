@@ -1,0 +1,11 @@
+/home/runner/work/Fork-Mon-1039-App-Mod-Booster/Fork-Mon-1039-App-Mod-Booster/src/ExpenseManagement/obj/Debug/net8.0/ExpenseManagement.csproj.AssemblyReference.cache
+/home/runner/work/Fork-Mon-1039-App-Mod-Booster/Fork-Mon-1039-App-Mod-Booster/src/ExpenseManagement/obj/Debug/net8.0/rpswa.dswa.cache.json
+/home/runner/work/Fork-Mon-1039-App-Mod-Booster/Fork-Mon-1039-App-Mod-Booster/src/ExpenseManagement/obj/Debug/net8.0/ExpenseManagement.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/Fork-Mon-1039-App-Mod-Booster/Fork-Mon-1039-App-Mod-Booster/src/ExpenseManagement/obj/Debug/net8.0/ExpenseManagement.AssemblyInfoInputs.cache
+/home/runner/work/Fork-Mon-1039-App-Mod-Booster/Fork-Mon-1039-App-Mod-Booster/src/ExpenseManagement/obj/Debug/net8.0/ExpenseManagement.AssemblyInfo.cs
+/home/runner/work/Fork-Mon-1039-App-Mod-Booster/Fork-Mon-1039-App-Mod-Booster/src/ExpenseManagement/obj/Debug/net8.0/ExpenseManagement.csproj.CoreCompileInputs.cache
+/home/runner/work/Fork-Mon-1039-App-Mod-Booster/Fork-Mon-1039-App-Mod-Booster/src/ExpenseManagement/obj/Debug/net8.0/ExpenseManagement.MvcApplicationPartsAssemblyInfo.cs
+/home/runner/work/Fork-Mon-1039-App-Mod-Booster/Fork-Mon-1039-App-Mod-Booster/src/ExpenseManagement/obj/Debug/net8.0/ExpenseManagement.MvcApplicationPartsAssemblyInfo.cache
+/home/runner/work/Fork-Mon-1039-App-Mod-Booster/Fork-Mon-1039-App-Mod-Booster/src/ExpenseManagement/obj/Debug/net8.0/ExpenseManagement.RazorAssemblyInfo.cache
+/home/runner/work/Fork-Mon-1039-App-Mod-Booster/Fork-Mon-1039-App-Mod-Booster/src/ExpenseManagement/obj/Debug/net8.0/ExpenseManagement.RazorAssemblyInfo.cs
+/home/runner/work/Fork-Mon-1039-App-Mod-Booster/Fork-Mon-1039-App-Mod-Booster/src/ExpenseManagement/obj/Debug/net8.0/ExpenseManagement.sourcelink.json
