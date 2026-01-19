@@ -1,0 +1,404 @@
+@page
+@model ChatModel
+@{
+    ViewData["Title"] = "AI Chat Assistant";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 1.8em;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #5568d3;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px;
+            width: 100%;
+            margin: 20px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-height: 500px;
+            max-height: 600px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 15px;
+            line-height: 1.5;
+            animation: slideIn 0.3s ease;
+        }
+
+        @@keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-user {
+            align-self: flex-end;
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message-assistant {
+            align-self: flex-start;
+            background: #f0f0f0;
+            color: #333;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-assistant strong {
+            font-weight: 700;
+        }
+
+        .message-assistant ul, .message-assistant ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .message-assistant li {
+            margin: 5px 0;
+        }
+
+        .typing-indicator {
+            align-self: flex-start;
+            padding: 15px 20px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            border-bottom-left-radius: 5px;
+            display: none;
+        }
+
+        .typing-indicator.active {
+            display: block;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 5px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @@keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #667eea;
+        }
+
+        .send-btn {
+            padding: 15px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .welcome-message {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+        }
+
+        .welcome-message h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .example-queries {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .example-query {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .example-query:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>💬 AI Chat Assistant</h1>
+            <a href="/" class="back-btn">← Back to Expenses</a>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message">
+                <h2>Welcome to the Expense Management AI Assistant!</h2>
+                <p>I can help you manage expenses, view reports, and answer questions about your expense data.</p>
+                <div class="example-queries">
+                    <div class="example-query" onclick="sendExampleQuery('Show me all pending expenses')">Show me all pending expenses</div>
+                    <div class="example-query" onclick="sendExampleQuery('What is my expense summary?')">What is my expense summary?</div>
+                    <div class="example-query" onclick="sendExampleQuery('List all expenses by Alice')">List all expenses by Alice</div>
+                    <div class="example-query" onclick="sendExampleQuery('Show approved expenses')">Show approved expenses</div>
+                </div>
+            </div>
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Ask me anything about your expenses..." />
+            <button id="sendBtn" class="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        let conversationHistory = [];
+
+        // Handle Enter key
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function sendExampleQuery(query) {
+            document.getElementById('chatInput').value = query;
+            sendMessage();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            // Disable input
+            input.disabled = true;
+            document.getElementById('sendBtn').disabled = true;
+
+            // Add user message to UI
+            addMessage(message, 'user');
+            input.value = '';
+
+            // Show typing indicator
+            document.getElementById('typingIndicator').classList.add('active');
+
+            try {
+                // Send to API
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Hide typing indicator
+                document.getElementById('typingIndicator').classList.remove('active');
+
+                if (response.ok) {
+                    addMessage(data.response, 'assistant');
+                } else {
+                    addMessage('Error: ' + (data.error || 'Failed to get response'), 'assistant');
+                }
+            } catch (error) {
+                document.getElementById('typingIndicator').classList.remove('active');
+                addMessage('Error: Failed to connect to chat service. ' + error.message, 'assistant');
+            }
+
+            // Re-enable input
+            input.disabled = false;
+            document.getElementById('sendBtn').disabled = false;
+            input.focus();
+        }
+
+        function addMessage(text, type) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${type}`;
+            
+            if (type === 'assistant') {
+                // Format the message with proper HTML rendering
+                messageDiv.innerHTML = formatMessage(text);
+            } else {
+                messageDiv.textContent = text;
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Update conversation history (simplified for this example)
+            // In production, you'd want to track the full conversation properly
+        }
+
+        function formatMessage(text) {
+            // Escape HTML first to prevent XSS
+            const escaped = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+            
+            // Then apply formatting
+            let formatted = escaped
+                // Bold text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // Numbered lists
+                .replace(/^(\d+\.\s+.+)$/gm, '<li>$1</li>')
+                // Bullet points
+                .replace(/^[-*]\s+(.+)$/gm, '<li>$1</li>')
+                // Line breaks
+                .replace(/\n/g, '<br>');
+            
+            // Wrap consecutive <li> elements in <ul> or <ol>
+            formatted = formatted.replace(/(<li>\d+\.\s+.+<\/li>\s*)+/g, '<ol>$&</ol>');
+            formatted = formatted.replace(/(<li>(?!\d+\.).+<\/li>\s*)+/g, '<ul>$&</ul>');
+            
+            // Clean up list item markers after wrapping
+            formatted = formatted.replace(/<li>(\d+\.\s+)/g, '<li>');
+            formatted = formatted.replace(/<li>[-*]\s+/g, '<li>');
+            
+            return formatted;
+        }
+    </script>
+</body>
+</html>
